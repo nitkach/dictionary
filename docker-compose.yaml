@@ -1,0 +1,32 @@
+services:
+  # dictionary:
+  #   image: dictionary
+
+  #   build: .
+
+  #   ports: [3000:3000]
+
+  #   networks: [postgres]
+  #   depends_on: [postgres]
+
+  postgres:
+    image: postgres:17
+
+    volumes:
+      [dictionary:/var/lib/postgresql/data]
+
+    environment:
+      POSTGRES_DB: $PGDATABASE
+      POSTGRES_USER: $PGUSER
+      POSTGRES_PASSWORD: $PGPASSWORD
+
+    networks:
+      [postgres]
+
+    ports:
+      [5432:5432]
+volumes:
+  dictionary:
+
+networks:
+  postgres:

@@ -1,0 +1,20 @@
+[package]
+edition = "2021"
+name    = "dictionary"
+version = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow       = { version = "1.0" }
+axum         = { version = "0.8", features = ["macros"] }
+dotenvy      = { version = "0.15" }
+reqwest      = { version = "0.12", features = ["json"] }
+serde        = { version = "1.0", features = ["serde_derive"] }
+serde_json   = { version = "1.0" }
+sqlx         = { version = "0.8", features = ["postgres", "runtime-tokio"] }
+strum        = { version = "0.26" }
+strum_macros = { version = "0.26" }
+thiserror    = { version = "2.0" }
+tokio        = { version = "1", features = ["full"] }
+url          = { version = "2.5" }
