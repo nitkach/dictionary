@@ -1,12 +1,14 @@
-use std::{net::Ipv4Addr, process::ExitCode};
+use std::process::ExitCode;
 
-use anyhow::Result;
+use log::{error, info};
 
 #[tokio::main]
 async fn main() -> ExitCode {
+    env_logger::init();
+    info!("Logger initialized");
+
     if let Err(err) = dotenvy::dotenv() {
-        eprintln!("Error with .env file: {err}");
-        return ExitCode::FAILURE;
+        error!("Error with .env file: {err}");
     }
 
     if let Err(err) = dictionary::run().await {

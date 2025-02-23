@@ -1,44 +1,40 @@
-create table if not exists word_entry (
+create table if not exists words (
     id serial primary key,
-    word text not null,
-    phonetic text not null
+    word text not null
 );
 
-create table if not exists source_url (
+create table if not exists word_entries (
     id serial primary key,
-    word_entry_id int references word_entry(id) on delete cascade,
+    word text not null
+);
+
+create table if not exists source_urls (
+    id serial primary key,
+    word_entry_id int references word_entries (id) on delete cascade,
     url text not null
 );
 
-create table if not exists phonetic (
+create table if not exists meanings (
     id serial primary key,
-    word_entry_id int references word_entry(id) on delete cascade,
-    text text not null,
-    audio text not null,
-    source_url text not null
-);
-
-create table if not exists meaning (
-    id serial primary key,
-    word_entry_id int references word_entry(id) on delete cascade,
+    word_entry_id int references word_entries (id) on delete cascade,
     part_of_speech text not null
 );
 
-create table if not exists definition (
+create table if not exists synonyms (
     id serial primary key,
-    meaning_id int references meaning(id) on delete cascade,
-    definition text not null,
-    example text not null
-);
-
-create table if not exists synonym (
-    id serial primary key,
-    meaning_id int references meaning(id) on delete cascade,
+    meaning_id int references meanings (id) on delete cascade,
     synonym text not null
 );
 
-create table if not exists antonym (
+create table if not exists antonyms (
     id serial primary key,
-    meaning_id int references meaning(id) on delete cascade,
+    meaning_id int references meanings (id) on delete cascade,
     antonym text not null
+);
+
+create table if not exists definitions (
+    id serial primary key,
+    meaning_id int references meanings (id) on delete cascade,
+    definition text not null,
+    example text
 );

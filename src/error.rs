@@ -1,4 +1,5 @@
 use axum::{http::StatusCode, response::IntoResponse};
+use log::error;
 
 pub(crate) struct AppError {
     code: StatusCode,
@@ -10,6 +11,9 @@ pub(crate) enum ErrorKind {
     #[error("{0}")]
     NoDefinitionsFound(String),
 
+    #[error("{0}")]
+    NoEntriesFound(String),
+
     #[error(transparent)]
     Other(#[from] anyhow::Error),
 }
@@ -19,10 +23,17 @@ impl AppError {
         Self { code, kind }
     }
 
-    pub(crate) fn no_word_definitions(message: String) -> Self {
+    pub(crate) fn word_definitions_not_found(message: String) -> Self {
         Self {
             code: StatusCode::NOT_FOUND,
             kind: ErrorKind::NoDefinitionsFound(message),
+        }
+    }
+
+    pub(crate) fn word_entries_not_found(message: String) -> Self {
+        Self {
+            code: StatusCode::NOT_FOUND,
+            kind: ErrorKind::NoEntriesFound(message),
         }
     }
 }
@@ -31,8 +42,11 @@ impl IntoResponse for AppError {
     fn into_response(self) -> axum::response::Response {
         let code = self.code;
         let body = match self.kind {
-            ErrorKind::NoDefinitionsFound(_) => todo!(),
-            ErrorKind::Other(_) => "something went wrong".to_owned(),
+            ErrorKind::Other(error) => {
+                error!("{error:?}");
+                "something went wrong".to_owned()
+            }
+            _ => self.kind.to_string(),
         };
 
         (code, body).into_response()

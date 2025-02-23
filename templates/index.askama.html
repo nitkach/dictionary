@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <style>
+        .index {
+            font-size: larger;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+
+        .user-forms {
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .user-forms input {
+            padding: 5px;
+            border: 2px solid rgb(209, 209, 209);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .user-forms button {
+            padding: 7px 10px;
+            background-color: #ab00ce;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+        .user-forms button:hover {
+            background-color: #7f0099;
+        }
+
+        .random-words {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgb(66, 66, 66, 0.4);
+        }
+
+        .random-words h1 {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .random-words ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex-direction: column;
+        }
+
+        .random-words li {
+            margin: 10px 10px;
+        }
+
+        .random-words a {
+            color: #ab00ce;
+            text-decoration: none;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .random-words a:hover {
+            color: #7f0099;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topnav">
+        <a href="/">Home</a>
+    </div>
+
+    <div class="index">
+        <div class="user-forms">
+            <form action="/" , method="post">
+                <input type="text" name="word" required>
+                <button type="submit">Add word</button>
+            </form>
+            <form action="/" , method="get">
+                <input type="text" name="word" required>
+                <button type="submit">Search word</button>
+            </form>
+        </div>
+        {% if !self.words.is_empty() %}
+        <div class="random-words">
+            <h1>10 Random words</h1>
+            <ul>
+                {% for word in words %}
+                <li>
+                    <a href="{{ word }}" target="_blank">{{ word }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>

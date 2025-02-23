@@ -1,4 +1,4 @@
-FROM rust:1.84.1-bullseye as build
+FROM rust:1.84.1-bullseye AS build
 
 WORKDIR /app
 
@@ -20,4 +20,7 @@ WORKDIR /app
 
 COPY --from=build /app/bin/dictionary /app/bin/dictionary
 
+COPY --from=build /app/templates /app/templates
+
+EXPOSE 3000
 CMD [ "/app/bin/dictionary" ]

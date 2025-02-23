@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Word: {{ word }}</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <style>
+        .word-definitions {
+            font-size: larger;
+            margin: 20px;
+            padding: 0;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        .entry {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .part-of-speech {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .definition {
+            margin-left: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .example {
+            font-style: italic;
+            color: #777;
+            margin-left: 30px;
+        }
+
+        .synonyms,
+        .antonyms {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .source-urls {
+            margin-top: 20px;
+            font-size: 1em;
+            color: #555;
+        }
+
+        .source-urls a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .source-urls a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topnav">
+        <a href="/">Home</a>
+    </div>
+
+    <div class="word-definitions">
+        <h1>Word: {{ word }}</h1>
+        {% for word_entry in word_entries %}
+        <div class="entry">
+            {% for meaning in word_entry.meanings %}
+            <div class="meaning">
+                <div class="part-of-speech">{{ meaning.part_of_speech }}</div>
+
+                {% for definition in meaning.definitions %}
+                <div class="definition">
+                    <strong>Definition:</strong> {{ definition.definition }}
+                    {% if let Some(example) = definition.example %}
+                    <div class="example">
+                        <strong>Example:</strong> {{ example }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                {% if !meaning.synonyms.is_empty() %}
+                <div class="synonyms">
+                    <strong>Synonyms:</strong>
+                    <ul>
+                        {% for synonym in meaning.synonyms %}
+                        <li>{{ synonym }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if !meaning.antonyms.is_empty() %}
+                <div class="antonyms">
+                    <strong>Antonyms:</strong>
+                    <ul>
+                        {% for antonym in meaning.antonyms %}
+                        <li>{{ antonym }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% if !word_entry.source_urls.is_empty() %}
+            <div class="source-urls">
+                <strong>Source URLs:</strong>
+                <ul>
+                    {% for url in word_entry.source_urls %}
+                    <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>
