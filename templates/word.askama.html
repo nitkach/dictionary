@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Word: {{ word }}</title>
-    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
     <style>
         .word-definitions {
             font-size: larger;
@@ -69,6 +69,8 @@
 <body>
     <div class="topnav">
         <a href="/">Home</a>
+        <a href="/words">Words</a>
+        <a class="active" href="/words/{{ word }}">{{ word }}</a>
     </div>
 
     <div class="word-definitions">

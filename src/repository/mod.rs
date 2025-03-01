@@ -1,6 +1,6 @@
 use std::sync::{Arc, Mutex};
 
-use crate::model::{AddWordForm, ApiResponse, Definition, Meaning, WordEntry};
+use crate::model::{ApiResponse, Definition, Meaning, WordEntry};
 use anyhow::Result;
 use log::info;
 use lru::LruCache;
@@ -361,7 +361,7 @@ impl Repository {
         Ok(Some(word_entries))
     }
 
-    pub(crate) async fn get_words(&self) -> Result<Vec<String>> {
+    pub(crate) async fn get_10_random_words(&self) -> Result<Vec<String>> {
         let mut transaction = self.pool.begin().await?;
 
         let query = sqlx::query_as!(
@@ -371,6 +371,25 @@ impl Repository {
             from words
             order by random()
             limit 10
+            "#
+        );
+
+        let words = query.fetch_all(&mut *transaction).await?;
+        let words = words.into_iter().map(|DbWord { word }| word).collect();
+
+        transaction.commit().await?;
+
+        Ok(words)
+    }
+
+    pub(crate) async fn get_all_words(&self) -> Result<Vec<String>> {
+        let mut transaction = self.pool.begin().await?;
+
+        let query = sqlx::query_as!(
+            DbWord,
+            r#"
+            select word
+            from words
             "#
         );
 

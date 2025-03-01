@@ -1,24 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
-pub(crate) struct PostWord {
-    #[serde(flatten)]
-    word: AddWordForm,
-}
-
-impl PostWord {
-    pub(crate) fn into_word(self) -> AddWordForm {
-        self.word
-    }
-}
-
-#[derive(Deserialize)]
 pub(crate) struct AddWordForm {
-    pub(crate) word: String,
-}
-
-#[derive(Deserialize)]
-pub(crate) struct SearchWordForm {
     pub(crate) word: String,
 }
 

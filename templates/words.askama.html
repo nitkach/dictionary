@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Words</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .words {
+            padding-top: 20px;
+            margin: 0 auto;
+            /* center content */
+        }
+
+        .words ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .words li {
+            margin: 10px 0;
+            /* space between list items */
+            padding: 10px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            /* center vertically */
+            justify-content: center;
+            /* center horizontally */
+        }
+
+        .words li:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .words a {
+            color: #ab00ce;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 2em;
+        }
+
+        .words a:hover {
+            color: #7f0099;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topnav">
+        <a href="/">Home</a>
+        <a class="active" href="/words">Words</a>
+    </div>
+
+    <div class="words">
+        {% if !self.words.is_empty() %}
+        <ul>
+            {% for word in self.words %}
+            <li>
+                <a href="/words/{{ word }}">{{ word }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <h1>
+            No words found.
+        </h1>
+        {% endif %}
+    </div>
+</body>
+
+</html>

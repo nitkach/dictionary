@@ -4,12 +4,23 @@
 <head>
     <meta charset="utf-8">
     <title>Home</title>
-    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <script>
+        "use strict";
+        function redirectToWordPage() {
+            const word = document.getElementById("search-input");
+            if (!(word instanceof HTMLInputElement)) {
+                return;
+            }
+            if (word.value) {
+                window.location.replace(`/words/${word.value}`);
+            }
+        }
+    </script>
     <style>
         .index {
             font-size: larger;
             margin: 0 auto;
-            padding: 20px;
             color: #333;
         }
 
@@ -47,7 +58,6 @@
         .random-words {
             background-color: white;
             padding: 15px;
-            border-radius: 8px;
             box-shadow: 0 2px 4px rgb(66, 66, 66, 0.4);
         }
 
@@ -87,19 +97,20 @@
 
 <body>
     <div class="topnav">
-        <a href="/">Home</a>
+        <a class="active" href="/">Home</a>
+        <a href="/words">Words</a>
     </div>
 
     <div class="index">
         <div class="user-forms">
-            <form action="/" , method="post">
+            <form action="/words" , method="post">
                 <input type="text" name="word" required>
                 <button type="submit">Add word</button>
             </form>
-            <form action="/" , method="get">
-                <input type="text" name="word" required>
-                <button type="submit">Search word</button>
-            </form>
+            <div>
+                <input id="search-input" type="text" name="word" required>
+                <button onclick="redirectToWordPage()">Search word</button>
+            </div>
         </div>
         {% if !self.words.is_empty() %}
         <div class="random-words">
@@ -107,7 +118,7 @@
             <ul>
                 {% for word in words %}
                 <li>
-                    <a href="{{ word }}" target="_blank">{{ word }}</a>
+                    <a href="/words/{{ word }}" target="_self">{{ word }}</a>
                 </li>
                 {% endfor %}
             </ul>

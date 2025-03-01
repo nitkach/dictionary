@@ -1,6 +1,6 @@
 use crate::{
     error::AppError,
-    model::{AddWordForm, PostWord, SearchWordForm, WordEntry},
+    model::{AddWordForm, WordEntry},
     repository::Repository,
 };
 use askama_axum::{into_response, Template};
@@ -8,23 +8,21 @@ use axum::{
     debug_handler,
     extract::{Path, State},
     response::{IntoResponse, Redirect},
-    routing::{delete, get, post},
-    Form, Json, Router,
+    routing::{get, post},
+    Form, Router,
 };
 use log::{error, info};
 use tower_http::services::ServeDir;
 
 pub(crate) fn initialize_router(shared_state: Repository) -> Router {
-    let router = Router::new()
+    Router::new()
         .route("/", get(get_index))
-        .route("/", post(post_word))
-        .route("/search", post(search_word))
-        .route("/{word}", get(get_word))
-        .route("/remove/{word}", delete(remove_word))
+        .route("/words", post(post_word))
+        .route("/words", get(get_words))
+        .route("/words/{word}", get(get_word))
         .nest_service("/static", ServeDir::new("templates"))
-        .with_state(shared_state);
-
-    router
+        .fallback(handle_404)
+        .with_state(shared_state)
 }
 
 #[derive(Debug, Template)]
@@ -37,7 +35,7 @@ struct IndexTemplate {
 async fn get_index(State(state): State<Repository>) -> Result<impl IntoResponse, AppError> {
     info!("Receive request for index page");
 
-    let words = state.get_words().await?;
+    let words = state.get_10_random_words().await?;
 
     let html = IndexTemplate { words };
 
@@ -52,34 +50,13 @@ struct WordTemplate {
 }
 
 #[debug_handler]
-async fn search_word(
-    State(state): State<Repository>,
-    Form(form): Form<SearchWordForm>,
-) -> Result<impl IntoResponse, AppError> {
-    let word = form.word;
-
-    info!("Receive request from search form about word: '{word}'");
-    let Some(word_entries) = state.get_word_definitions(&word).await? else {
-        return Err(AppError::word_entries_not_found(format!(
-            "There are no records found with the word: '{word}'"
-        )));
-    };
-
-    let html = WordTemplate { word, word_entries };
-
-    Ok(into_response(&html))
-}
-
-#[debug_handler]
 async fn get_word(
     State(state): State<Repository>,
     Path(word): Path<String>,
 ) -> Result<impl IntoResponse, AppError> {
     info!("Receive request for information about word: '{word}'");
     let Some(word_entries) = state.get_word_definitions(&word).await? else {
-        return Err(AppError::word_entries_not_found(format!(
-            "There are no records found with the word: '{word}'"
-        )));
+        return Err(AppError::word_entries_not_found(word));
     };
 
     let html = WordTemplate { word, word_entries };
@@ -99,11 +76,9 @@ async fn post_word(
 
     let word_definitions = match word_definitions {
         crate::model::ApiResponse::Success(words_entries) => words_entries,
-        crate::model::ApiResponse::Missing(crate::model::MissingResponse { title }) => {
-            error!("No definition found for word: '{word}'");
-            return Err(AppError::word_definitions_not_found(format!(
-                "{title}: \"{word}\""
-            )));
+        crate::model::ApiResponse::Missing(crate::model::MissingResponse { .. }) => {
+            error!("No definitions found for word: '{word}'");
+            return Err(AppError::word_definitions_not_found(word));
         }
     };
 
@@ -111,13 +86,29 @@ async fn post_word(
     state.add_word_entries(&word, word_definitions).await?;
     info!("Successfully added definitions to database for word: '{word}'");
 
-    Ok(Redirect::to(&format!("/{word}")))
+    Ok(Redirect::to(&format!("/words/{word}")))
+}
+
+#[derive(Debug, Template)]
+#[template(path = "words.askama.html")]
+struct WordsTemplate {
+    words: Vec<String>,
 }
 
 #[debug_handler]
-async fn remove_word(
-    State(state): State<Repository>,
-    Json(json): Json<PostWord>,
-) -> Result<impl IntoResponse, AppError> {
-    Ok(())
+async fn get_words(State(state): State<Repository>) -> Result<impl IntoResponse, AppError> {
+    info!("Receive request to list all words");
+
+    let words = state.get_all_words().await?;
+
+    let html = WordsTemplate { words };
+
+    Ok(into_response(&html))
+}
+
+#[debug_handler]
+async fn handle_404(_: State<Repository>) -> AppError {
+    info!("User tried to access non-existing page");
+
+    AppError::page_not_found()
 }
