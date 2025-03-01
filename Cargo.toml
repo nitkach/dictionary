@@ -6,21 +6,19 @@ version = "0.1.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow       = { version = "1.0" }
-askama       = { version = "0.12", features = ["with-axum"] }
-askama_axum  = { version = "0.4" }
-axum         = { version = "0.8", features = ["macros", "form"] }
-dotenvy      = { version = "0.15" }
-env_logger   = { version = "0.11" }
-log          = { version = "0.4" }
-lru          = { version = "0.13.0" }
-reqwest      = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
-serde        = { version = "1.0", features = ["serde_derive"] }
-serde_json   = { version = "1.0" }
-sqlx         = { version = "0.8", features = ["postgres", "runtime-tokio"] }
-strum        = { version = "0.26" }
-strum_macros = { version = "0.26" }
-thiserror    = { version = "2.0" }
-tokio        = { version = "1", features = ["full"] }
-tower-http   = { version = "0.6.2", features = ["full"] }
-url          = { version = "2.5" }
+anyhow      = { version = "1.0" }
+askama      = { version = "0.12", features = ["with-axum"] }
+askama_axum = { version = "0.4" }
+axum        = { version = "0.8", features = ["macros", "form"] }
+dotenvy     = { version = "0.15" }
+env_logger  = { version = "0.11" }
+log         = { version = "0.4" }
+lru         = { version = "0.13.0" }
+reqwest     = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+serde       = { version = "1.0", features = ["serde_derive"] }
+serde_json  = { version = "1.0" }
+sqlx        = { version = "0.8", features = ["postgres", "runtime-tokio"] }
+thiserror   = { version = "2.0" }
+tokio       = { version = "1", features = ["full"] }
+tower-http  = { version = "0.6.2", features = ["full"] }
+url         = { version = "2.5" }

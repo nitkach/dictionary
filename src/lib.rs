@@ -44,10 +44,10 @@ impl Config {
             let pg_user = std::env::var("PGUSER")?;
             let pg_password = std::env::var("PGPASSWORD")?;
             let pg_db = std::env::var("PGDATABASE")?;
-            let pg_host = std::env::var("PGHOST").unwrap_or_else(|_| "127.0.0.1".to_owned());
-            let pg_port = std::env::var("PGPORT").unwrap_or_else(|_| "5432".to_owned());
+            let pg_host = std::env::var("PGHOST")?;
+            let pg_port = std::env::var("PGPORT")?;
 
-            format!("postgres://{pg_user}:{pg_password}@postgres:{pg_port}/{pg_db}")
+            format!("postgres://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_db}")
         };
         let database_url = Url::parse(&input)?;
 
