@@ -4,7 +4,6 @@ use std::net::Ipv4Addr;
 use url::Url;
 
 mod app;
-mod dto;
 mod error;
 mod model;
 mod repository;
